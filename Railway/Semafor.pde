@@ -1,6 +1,7 @@
 class Semafor
 {
   Signal sig = Signal.STOP;
+  Control con = Control.STOJ;
   int x, y;
   Semafor next = null;
   boolean ok = true;
@@ -28,6 +29,11 @@ class Semafor
     
     if(point_x == -1) c = new Connection(new PVector(x, y), new PVector(next.x, next.y));
     else c = new Connection(new PVector(x, y), new PVector(next.x, next.y), new PVector(point_x, point_y));
+  }
+  
+  void updateSignal()
+  {
+    sig = optionToSignal(con, this);
   }
   
   void drawLine()

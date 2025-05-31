@@ -2,7 +2,7 @@ class UI
 {
   int x = -1, y = -1;
   
-  Signal[] signals = Signal.values();
+  Control[] controls = Control.values();
   
   void draw()
   {
@@ -13,7 +13,7 @@ class UI
     noStroke();
     textAlign(CENTER, CENTER);
     
-    for(int i = 0; i < signals.length; i++)
+    for(int i = 0; i < controls.length; i++)
     {
       fill(0);
       if(mouseX >= x && mouseY >= y + UI_Element_H * i && mouseX <= x + UI_W && mouseY <= y + UI_Element_H * (i + 1)) fill(100);
@@ -23,15 +23,15 @@ class UI
       fill(255);
       noStroke();
       
-      text(signals[i] + "", x + UI_W / 2, y + UI_Element_H * i + UI_Element_H / 2);
+      text(controls[i] + "", x + UI_W / 2, y + UI_Element_H * i + UI_Element_H / 2);
     }
   }
   
-  Signal getOption()
+  Control getOption()
   {
-    for(int i = 0; i < signals.length; i++)
+    for(int i = 0; i < controls.length; i++)
     {
-      if(mouseX >= x && mouseY >= y + UI_Element_H * i && mouseX <= x + UI_W && mouseY <= y + UI_Element_H * (i + 1)) return signals[i];
+      if(mouseX >= x && mouseY >= y + UI_Element_H * i && mouseX <= x + UI_W && mouseY <= y + UI_Element_H * (i + 1)) return controls[i];
     }
     
     return null;

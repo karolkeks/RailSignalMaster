@@ -2,7 +2,7 @@ import java.util.*;
 import java.util.Arrays;
 
 final int SIZE = 20;
-final int W = 1700, H = 900, UI_W = 250, UI_Element_H = 20;
+final int W = 1700, H = 900, UI_W = 200, UI_Element_H = 20;
 
 ArrayList<Semafor> semafors;
 UI ui = new UI();
@@ -26,14 +26,29 @@ void setup()
   }
 }
 
+Signal optionToSignal(Control c, Semafor curr)
+{
+  if(c == Control.STOJ) return Signal.STOP;
+  if(c == Control.SS) return Signal.SS;
+  if(curr.next == null)
+  {
+    return Signal.VMAX;
+  }
+  else
+  {
+    if(curr.next.con == Control.STOJ) return Signal.VMAX_STOP;
+    else return Signal.VMAX; 
+  }
+}
+
 void mousePressed()
 {
   if (ui.x != -1)
   {
-    Signal option = ui.getOption();
+    Control option = ui.getOption();
     if (option != null)
     {
-      curr.sig = option;
+      curr.con = option;
       curr = null;
       ui.x = -1;
       ui.y = -1;
@@ -72,25 +87,7 @@ void keyPressed()
 {
   if(keyCode == ENTER)
   {
-    for(Semafor s : semafors)
-    {
-      s.ok = true;
-      if(s.next == null)
-      {
-        continue;
-      }
-      if(s.sig.index == 15) continue;
-      if(s.sig.index == 1) continue;
-      int speed = s.next.sig.curr;
-      if(s.sig.next == speed || (s.sig.next == 60 && speed == 40) || (s.sig.index == 2 && speed != 0))
-      {
-        s.ok = true;
-      }
-      else
-      {
-        s.ok = false;
-      }
-    }
+    
   }
 }
 
@@ -100,6 +97,7 @@ void draw()
 
   for (Semafor s : semafors)
   {
+    s.updateSignal();
     s.drawLine();
   }
 
