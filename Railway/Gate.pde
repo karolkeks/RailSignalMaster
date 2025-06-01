@@ -14,6 +14,7 @@ class Gate extends Element
     point_x = p_x;
     point_y = p_y;
     num = _num;
+    confirmed = false;
   }
 
   void update()
@@ -42,7 +43,7 @@ class Gate extends Element
   
   void drawLine()
   {
-    stroke(255);
+    stroke(255, OPACITY);
     strokeWeight(2);
     if (next == null) return;
     
@@ -54,7 +55,7 @@ class Gate extends Element
     line(x, y, next_forward.x, next_forward.y);
     if(confirmed) stroke(0, 255, 0);
     else stroke(255, 255, 0);
-    if(sig == GateSignal.STRAIGHT) stroke(255);
+    if(sig == GateSignal.STRAIGHT) stroke(255, OPACITY);
     c.draw();
   }
   

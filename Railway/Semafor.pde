@@ -38,7 +38,7 @@ class Semafor extends Element
 
   void drawLine()
   {
-    stroke(255);
+    stroke(255, OPACITY);
     if (sig.curr > 0 || sig.curr == -1)
     {
       if(confirmed) stroke(0, 255, 0);
@@ -54,7 +54,11 @@ class Semafor extends Element
     PVector left = new PVector(0, SIZE).rotate(TWO_PI / 3.);
     fill(255);
     noStroke();
-    triangle(x, y - SIZE, left.x + x, y - left.y, x - left.x, y - left.y);
+    push();
+    translate(x, y);
+    if(next != null) rotate(PVector.sub(c.c, c.a).heading() + PI / 2);
+    triangle(0, -SIZE, left.x, -left.y, -left.x, -left.y);
+    pop();
 
     textSize(20);
     fill(0);
