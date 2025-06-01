@@ -29,7 +29,7 @@ class SemaforUI extends UI
       fill(255);
       noStroke();
       
-      text(controls[i] + "", x + UI_W / 2, y + UI_Element_H * i + UI_Element_H / 2);
+      text(controls[i] + " " + optionToSignal(controls[i], curr), x + UI_W / 2, y + UI_Element_H * i + UI_Element_H / 2);
     }
   }
   

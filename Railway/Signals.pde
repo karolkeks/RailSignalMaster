@@ -15,15 +15,8 @@ enum Signal
   
   String toString()
   {
-    if(index == 15) return "Sygnal zastępczy";
+    if(index == 15) return "Sz";
     
-    String cur = curr + "";
-    if(curr == -1) cur = "maks";
-    String nex = next + "";
-    if(next == -1) nex = "maks";
-    
-    String res = "Teraz: " + cur;
-    if(next != -2) res += ", Następna: " + nex;
-    return res;
+    return "S" + index;
   }
 }
