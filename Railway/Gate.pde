@@ -5,13 +5,15 @@ class Gate extends Element
   GateSignal sig = GateSignal.STRAIGHT;
   Element next_forward = null;
   Element next_side = null;
+  int num;
   
-  Gate(int _x, int _y, int p_x, int p_y)
+  Gate(int _x, int _y, int p_x, int p_y, int _num)
   {
     x = _x;
     y = _y;
     point_x = p_x;
     point_y = p_y;
+    num = _num;
   }
 
   void update()
@@ -31,11 +33,11 @@ class Gate extends Element
     fill(255);
     ellipse(x, y, SIZE, SIZE);
 
-    //textSize(20);
-    //fill(0);
-    //noStroke();
-    //textAlign(CENTER, CENTER);
-    //text(sig.index + "", x, y);
+    textSize(20);
+    fill(0);
+    noStroke();
+    textAlign(CENTER, CENTER);
+    text(num + "", x, y);
   }
   
   void drawLine()
@@ -44,9 +46,14 @@ class Gate extends Element
     strokeWeight(2);
     if (next == null) return;
     
-    if(sig == GateSignal.STRAIGHT) stroke(0, 255, 0);
+    if(sig == GateSignal.STRAIGHT)
+    {
+      if(confirmed) stroke(0, 255, 0);
+      else stroke(255, 255, 0);
+    }
     line(x, y, next_forward.x, next_forward.y);
-    stroke(0, 255, 0);
+    if(confirmed) stroke(0, 255, 0);
+    else stroke(255, 255, 0);
     if(sig == GateSignal.STRAIGHT) stroke(255);
     c.draw();
   }

@@ -4,7 +4,7 @@ import java.util.Arrays;
 final int SIZE = 20;
 final int W = 1700, H = 900, UI_W = 200, UI_Element_H = 20;
 
-ArrayList<Element> elements;
+Element[] elements;
 UI ui = null;
 
 Element curr = null;
@@ -14,12 +14,15 @@ void settings()
   size(W, H);
 }
 
+PFont font;
 void setup()
 {
-  elements = new ArrayList<>(Arrays.asList(new Semafor(100, H / 2), new Gate(300, H / 2, 400, 200), new Semafor(500, H / 2), new Semafor(500, 200)));
-  elements.get(0).next = elements.get(1);
-  ((Gate) elements.get(1)).next_forward = elements.get(2);
-  ((Gate) elements.get(1)).next_side = elements.get(3);
+  elements = new Element[]{new Semafor(100, H / 2, 'A'), new Gate(300, H / 2, 400, 200, 1), new Semafor(1100, H / 2, 'B'), new Semafor(1100, 200, 'C'), new Semafor(1300, H / 2, 'D')};
+  elements[0].next = elements[1];
+  ((Gate) elements[1]).next_forward = elements[2];
+  ((Gate) elements[1]).next_side = elements[3];
+  elements[2].next = elements[4];
+  elements[3].next = elements[4];
 
   for (Element s : elements)
   {
@@ -27,6 +30,7 @@ void setup()
   }
   
   surface.setIcon(loadImage("Logo.jpg"));
+  font = createFont("PressStart2P-Regular.ttf", 20);
 }
 
 boolean speedLimit(Element curr)
@@ -104,6 +108,7 @@ void mousePressed()
       if (option != null)
       {
         se.con = option;
+        se.confirmed = false;
         curr = null;
         ui = null;
       } else
@@ -135,6 +140,7 @@ void mousePressed()
       if (option != null)
       {
         g.sig = option;
+        g.confirmed = false;
         curr = null;
         ui = null;
       } else
@@ -182,6 +188,10 @@ void keyPressed()
 {
   if (keyCode == ENTER)
   {
+    for(Element e : elements)
+    {
+      e.confirmed = true;
+    }
   }
 }
 
@@ -201,4 +211,12 @@ void draw()
   }
 
   if (ui != null) ui.draw();
+  
+  fill(255);
+  noStroke();
+  push();
+  textFont(font);
+  textAlign(LEFT, TOP);
+  text("Rail Signal Manager V1.0", 10, 10);
+  pop();
 }
