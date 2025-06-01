@@ -5,7 +5,7 @@ class Semafor extends Element
   Connection c = null;
   char ch;
 
-  int point_x = -1, point_y = -1;
+  int c_x = -1, c_y = -1, d_x = -1, d_y = -1;
 
   Semafor(int _x, int _y, char c)
   {
@@ -18,8 +18,19 @@ class Semafor extends Element
   {
     x = _x;
     y = _y;
-    point_x = p_x;
-    point_y = p_y;
+    c_x = p_x;
+    c_y = p_y;
+    ch = c;
+  }
+  
+  Semafor(int _x, int _y, int p_x, int p_y, int _d_x, int _d_y, char c)
+  {
+    x = _x;
+    y = _y;
+    c_x = p_x;
+    c_y = p_y;
+    d_x = _d_x;
+    d_y = _d_y;
     ch = c;
   }
 
@@ -27,8 +38,9 @@ class Semafor extends Element
   {
     if (next == null) return;
 
-    if (point_x == -1) c = new Connection(new PVector(x, y), new PVector(next.x, next.y));
-    else c = new Connection(new PVector(x, y), new PVector(next.x, next.y), new PVector(point_x, point_y));
+    if (c_x == -1) c = new Connection(new PVector(x, y), new PVector(next.x, next.y));
+    else if(d_x == -1) c = new Connection(new PVector(x, y), new PVector(next.x, next.y), new PVector(c_x, c_y));
+    else c = new Connection(new PVector(x, y), new PVector(next.x, next.y), new PVector(c_x, c_y), new PVector(d_x, d_y));
   }
 
   void updateSignal()

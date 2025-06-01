@@ -17,7 +17,7 @@ void settings()
 PFont font;
 void setup()
 {
-  elements = new Element[]{new Semafor(100, H / 2, 'A'), new Gate(300, H / 2, 400, 200, 1), new Semafor(1100, H / 2, 'B'), new Semafor(1100, 200, 1300, H / 2, 'C'), new Semafor(1330, H / 2, 'D')};
+  elements = new Element[]{new Semafor(100, H / 2, 'A'), new Gate(300, H / 2, 400, 200, 1), new Semafor(1000, H / 2, 'B'), new Semafor(1000, 200, 1100, 200, 1300, H / 2, 'C'), new Semafor(1330, H / 2, 'D')};
   elements[0].next = elements[1];
   ((Gate) elements[1]).next_forward = elements[2];
   ((Gate) elements[1]).next_side = elements[3];
