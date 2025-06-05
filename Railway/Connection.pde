@@ -6,7 +6,7 @@ class Connection
   {
     a = _a.copy();
     b = _b.copy();
-    c = _a.copy();
+    c = _b.copy();
     d = _b.copy();
   }
   

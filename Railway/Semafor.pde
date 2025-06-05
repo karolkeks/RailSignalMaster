@@ -88,6 +88,6 @@ class Semafor extends Element
   
   String toString()
   {
-    return "semafor " + ch + " s" + sig.index;
+    return "semafor " + ch + " s" + (sig.index == 15? "sz" : sig.index);
   }
 }
