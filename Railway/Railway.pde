@@ -1,3 +1,5 @@
+import controlP5.*;
+import processing.serial.*;
 import java.util.*;
 import java.util.Arrays;
 
@@ -8,6 +10,7 @@ Element[] elements;
 UI ui = null;
 
 Element curr = null;
+SerialConsole sc;
 
 void settings()
 {
@@ -31,6 +34,7 @@ void setup()
   
   surface.setIcon(loadImage("Logo.jpg"));
   font = createFont("PressStart2P-Regular.ttf", 20);
+  sc = new SerialConsole();
 }
 
 boolean speedLimit(Element curr)
@@ -191,6 +195,11 @@ void keyPressed()
     for(Element e : elements)
     {
       e.confirmed = true;
+    }
+    
+    for(Element e : elements)
+    {
+      sc.write(e.toString());
     }
   }
 }

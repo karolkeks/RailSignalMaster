@@ -63,4 +63,9 @@ class Gate extends Element
   {
     return dist(x, y, mouseX, mouseY) <= SIZE;
   }
+  
+  String toString()
+  {
+    return "rozjazd " + num + " " + (sig == GateSignal.STRAIGHT? "przod" : "na bok");
+  }
 }

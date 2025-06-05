@@ -85,4 +85,9 @@ class Semafor extends Element
     if (mouseX <= x - left.x && mouseX >= x + left.x && mouseY >= y - SIZE && mouseY <= y - left.y) return true;
     return false;
   }
+  
+  String toString()
+  {
+    return "semafor " + ch + " s" + sig.index;
+  }
 }
