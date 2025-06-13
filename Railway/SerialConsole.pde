@@ -47,6 +47,7 @@ class SerialConsole extends PApplet
                   .setItemHeight(20)
                   .addItems(Serial.list())
                   ;
+    surface.setResizable(true);
   }
   
   public void draw()
@@ -54,6 +55,11 @@ class SerialConsole extends PApplet
     background(0);
     if(s != null)
     {
+      if(s.available() > 0)
+      {
+        String ss = s.readStringUntil('\n');
+        
+      }
       textSize(20);
       fill(255);
       noStroke();

@@ -3,6 +3,7 @@ class Semafor extends Element
   Signal sig = Signal.STOP;
   Control con = Control.STOJ;
   Connection c = null;
+  boolean limit = false;
   char ch;
 
   int c_x = -1, c_y = -1, d_x = -1, d_y = -1;
@@ -56,7 +57,6 @@ class Semafor extends Element
       if(confirmed) stroke(0, 255, 0);
       else stroke(255, 255, 0);
     }
-    if (sig.index == 15) stroke(255, 0, 0);
     strokeWeight(2);
     if (next != null) c.draw();
   }
@@ -65,12 +65,24 @@ class Semafor extends Element
   {
     PVector left = new PVector(0, SIZE).rotate(TWO_PI / 3.);
     fill(255);
+    if (sig.curr > 0 || sig.curr == -1)
+    {
+      if(confirmed) fill(0, 255, 0);
+      else fill(255, 255, 0);
+    }
     noStroke();
     push();
     translate(x, y);
     if(next != null) rotate(PVector.sub(c.c, c.a).heading() + PI / 2);
     triangle(0, -SIZE, left.x, -left.y, -left.x, -left.y);
     pop();
+    
+    if(sig.index == 15)
+    {
+      stroke(255);
+      line(x - SIZE, y - SIZE, x + SIZE, y + SIZE);
+      line(x - SIZE, y + SIZE, x + SIZE, y - SIZE);
+    }
 
     textSize(20);
     fill(0);

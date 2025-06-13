@@ -27,11 +27,15 @@ void setup()
   ((Gate) elements[1]).next_side = elements[3];
   elements[2].next = elements[4];
   elements[3].next = elements[4];
+  ((Semafor) elements[2]).limit = true;
+  ((Semafor) elements[3]).limit = true;
   elements[5].next = elements[6];
   ((Gate) elements[6]).next_forward = elements[7];
   ((Gate) elements[6]).next_side = elements[8];
   elements[7].next = elements[9];
   elements[8].next = elements[9];
+  ((Semafor) elements[7]).limit = true;
+  ((Semafor) elements[8]).limit = true;
 
   for (Element s : elements)
   {
@@ -46,12 +50,14 @@ void setup()
   surface.setIcon(loadImage("Logo.jpg"));
   font = createFont("PressStart2P-Regular.ttf", 20);
   sc = new SerialConsole();
+  surface.setResizable(true);
 }
 
 boolean speedLimit(Element curr)
 {
   assert(curr instanceof Semafor);
   Semafor s = (Semafor) curr;
+  if(s.limit) return true;
   if (s.next == null) return false;
   if (!(s.next instanceof Gate)) return false;
   Gate next = (Gate) s.next;
@@ -74,7 +80,7 @@ Signal optionToSignal(Control c, Element curr)
     {
       next.updateSignal();
       Gate g = (Gate)next;
-      boolean speedLimit = g.sig == GateSignal.SIDE;
+      boolean speedLimit = g.sig == GateSignal.SIDE || ((Semafor) curr).limit;
       next = g.next;
       assert(next instanceof Semafor);
       Semafor s = (Semafor) next;
@@ -100,13 +106,26 @@ Signal optionToSignal(Control c, Element curr)
     } else
     {
       Semafor s = (Semafor) next;
-      if (s.con == Control.JAZDA)
+      boolean speedLimit = ((Semafor) curr).limit;
+      if (speedLimit)
       {
-        if(speedLimit(s)) return Signal.VMAX_STOP;
-        return Signal.VMAX;
+        if (s.con == Control.JAZDA)
+        {
+          if (speedLimit(s)) return Signal.V60_V60;
+          return Signal.V60_VMAX;
+        }
+        if (s.con == Control.SS) return Signal.V60_STOP;
+        return Signal.V60_STOP;
+      } else
+      {
+        if (s.con == Control.JAZDA)
+        {
+          if(speedLimit(s)) return Signal.VMAX_STOP;
+          return Signal.VMAX;
+        }
+        if (s.con == Control.SS) return Signal.VMAX;
+        return Signal.VMAX_STOP;
       }
-      if (s.con == Control.SS) return Signal.VMAX;
-      return Signal.VMAX_STOP;
     }
   }
 }
