@@ -8,6 +8,7 @@ final int W = 1700, H = 900, UI_W = 200, UI_Element_H = 20, OPACITY = 100;
 
 Element[] elements;
 UI ui = null;
+boolean collision = false;
 
 Element curr = null;
 SerialConsole sc;
@@ -222,6 +223,14 @@ void keyPressed()
 {
   if (keyCode == ENTER)
   {
+    if((((Semafor) elements[3]).con == Control.JAZDA && ((Semafor) elements[8]).con == Control.JAZDA) || (((Semafor) elements[2]).con == Control.JAZDA && ((Semafor) elements[7]).con == Control.JAZDA) ||
+       (((Semafor) elements[0]).con == Control.JAZDA && ((Semafor) elements[7]).con == Control.JAZDA) || (((Semafor) elements[0]).con == Control.JAZDA && ((Semafor) elements[8]).con == Control.JAZDA) ||
+       (((Semafor) elements[2]).con == Control.JAZDA && ((Semafor) elements[5]).con == Control.JAZDA) || (((Semafor) elements[3]).con == Control.JAZDA && ((Semafor) elements[5]).con == Control.JAZDA))
+    {
+      collision = true;
+      return;
+    }
+    collision = false;
     for(Element e : elements)
     {
       e.confirmed = true;
@@ -258,5 +267,10 @@ void draw()
   textFont(font);
   textAlign(LEFT, TOP);
   text("Rail Signal Manager V1.0", 10, 10);
+  textAlign(CENTER, BOTTOM);
+  if(collision)
+  {
+    text("Pociągi mogą się zderzyć!", width / 2, height - 10);
+  }
   pop();
 }
