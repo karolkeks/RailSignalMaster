@@ -6,11 +6,11 @@
 //Rozjazdy:  1-pin 15; 2-pin 17
 // Made for polish people
 //Compatible with both the native ArduinoIDE serial monitor and our software. 
-
+//Please use IDF for putting the code, VSCode PlatformINO sometimes does not work.
 
 
 const int semPins[6] = {2, 4, 5, 12, 13, 14};
-const int turnoutPins[2] = {15, 17}; // Piny sterujące rozjazdami 1 i 2
+const int turnoutPins[2] = {15, 17}; 
 
 void setup() {
   Serial.begin(9600);
