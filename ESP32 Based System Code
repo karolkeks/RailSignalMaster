@@ -1,0 +1,141 @@
+// COPYRIGHT 2025 RAILSIGNALMASTER 
+//WRITTEN BY KAROLKEKS
+//Made for Polish Railway Signalling, made using the E-1 Instructions.
+//Pinouts: 
+// SEM - A - 2. SEM B-4. SEM C-5. SEM D-12. SEM E-13. SEM F-14
+//Rozjazdy:  1-pin 15; 2-pin 17
+// Made for polish people
+//Compatible with both the native ArduinoIDE serial monitor and our software. 
+
+
+
+const int semPins[6] = {2, 4, 5, 12, 13, 14};
+const int turnoutPins[2] = {15, 17}; // Piny sterujące rozjazdami 1 i 2
+
+void setup() {
+  Serial.begin(9600);
+  
+  for(int i = 0; i < 6; i++) {
+    pinMode(semPins[i], OUTPUT);
+    digitalWrite(semPins[i], LOW);
+  }
+  
+  for(int i = 0; i < 2; i++) {
+    pinMode(turnoutPins[i], OUTPUT);
+    digitalWrite(turnoutPins[i], LOW);
+  }
+  
+  Serial.println("System gotowy");
+  Serial.println("Komendy:");
+  Serial.println("semafor [A-F] [s1,s2,s4,s5,s10,s12,sz]");
+  Serial.println("rozjazd [1-2] [prosto,na bok]");
+}
+
+void loop() {
+  if(Serial.available()) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
+    processCommand(command);
+  }
+}
+
+void processCommand(String cmd) {
+  cmd.toLowerCase();
+  
+  if(cmd.startsWith("semafor ")) {
+    handleSemaphoreCommand(cmd);
+  } 
+  else if(cmd.startsWith("rozjazd ")) {
+    handleTurnoutCommand(cmd);
+  } 
+  else {
+    Serial.println("Blad: Nieznana komenda");
+  }
+}
+
+void handleSemaphoreCommand(String cmd) {
+  int space1 = cmd.indexOf(' ');
+  int space2 = cmd.indexOf(' ', space1 + 1);
+  
+  if(space1 != -1 && space2 != -1) {
+    char sem = cmd.charAt(space1 + 1);
+    String sig = cmd.substring(space2 + 1);
+    
+    int semIndex = sem - 'a';
+    if(semIndex >= 0 && semIndex < 6) {
+      int impulses = mapSignalToImpulses(sig);
+      if(impulses > 0) {
+        sendSemaphoreSignal(semIndex, impulses);
+        Serial.print("Semafor ");
+        Serial.print(sem);
+        Serial.print(": ");
+        Serial.println(sig);
+        return;
+      }
+    }
+  }
+  Serial.println("Blad: Nieprawidlowa komenda semafora");
+}
+
+void handleTurnoutCommand(String cmd) {
+  int space1 = cmd.indexOf(' ');
+  int space2 = cmd.indexOf(' ', space1 + 1);
+  
+  if(space1 != -1 && space2 != -1) {
+    int turnoutNum = cmd.substring(space1 + 1, space2).toInt();
+    String direction = cmd.substring(space2 + 1);
+    
+    if(turnoutNum >= 1 && turnoutNum <= 2) {
+      int turnoutIndex = turnoutNum - 1;
+      if(direction == "prosto") {
+        sendTurnoutImpulse(turnoutIndex, 1);
+        Serial.print("Rozjazd ");
+        Serial.print(turnoutNum);
+        Serial.println(": prosto (1 impuls)");
+        return;
+      } 
+      else if(direction == "na bok") {
+        sendTurnoutImpulse(turnoutIndex, 2);
+        Serial.print("Rozjazd ");
+        Serial.print(turnoutNum);
+        Serial.println(": na bok (2 impulsy)");
+        return;
+      }
+    }
+  }
+  Serial.println("Blad: Nieprawidlowa komenda rozjazdu");
+}
+
+int mapSignalToImpulses(String sig) {
+  if(sig == "s1") return 1;
+  if(sig == "s2") return 2;
+  if(sig == "s4") return 3;
+  if(sig == "s5") return 4;
+  if(sig == "s10") return 5;
+  if(sig == "s12") return 7;
+  if(sig == "sz") return 9;
+  return 0;
+}
+
+void sendSemaphoreSignal(int semIndex, int impulses) {
+  digitalWrite(semPins[semIndex], HIGH);
+  delay(100);
+  
+  for(int i = 0; i < impulses; i++) {
+    digitalWrite(semPins[semIndex], LOW);
+    delay(100);
+    digitalWrite(semPins[semIndex], HIGH);
+    delay(100);
+  }
+  
+  digitalWrite(semPins[semIndex], LOW);
+}
+
+void sendTurnoutImpulse(int turnoutIndex, int impulseCount) {
+  for(int i = 0; i < impulseCount; i++) {
+    digitalWrite(turnoutPins[turnoutIndex], HIGH);
+    delay(100);
+    digitalWrite(turnoutPins[turnoutIndex], LOW);
+    delay(100);
+  }
+}
