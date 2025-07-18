@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.Arrays;
 
 final int SIZE = 20;
-final int W = 1700, H = 900, UI_W = 200, UI_Element_H = 20, OPACITY = 100;
+final int W = 1700, H = 900, UI_W = 200, UI_Element_H = 20, OPACITY = 150, LEN = 100;
 
 Element[] elements;
 UI ui = null;
@@ -133,89 +133,159 @@ Signal optionToSignal(Control c, Element curr)
 
 void mousePressed()
 {
-  if (ui != null)
+  if(mouseButton == LEFT)
   {
-    if (ui instanceof SemaforUI)
+    if (ui != null)
     {
-      Semafor se = (Semafor) curr;
-      SemaforUI seui = (SemaforUI) ui;
-      Control option = seui.getOption();
-      if (option != null)
+      if (ui instanceof SemaforUI)
       {
-        se.con = option;
-        se.confirmed = false;
-        curr = null;
-        ui = null;
-      } else
-      {
-        curr = null;
-        ui = null;
-        for (Element s : elements)
+        Semafor se = (Semafor) curr;
+        SemaforUI seui = (SemaforUI) ui;
+        Control option = seui.getOption();
+        if (option != null)
         {
-          if (s.mouseIn())
-          {
-            curr = s;
-            if (s instanceof Semafor)
-            {
-              ui = new SemaforUI(s.x, s.y);
-            } else
-            {
-              ui = new GateUI(s.x, s.y);
-            }
-            break;
-          }
-        }
-      }
-    }
-    else
-    {
-      Gate g = (Gate) curr;
-      GateUI gui = (GateUI) ui;
-      GateSignal option = gui.getOption();
-      if (option != null)
-      {
-        g.sig = option;
-        g.confirmed = false;
-        curr = null;
-        ui = null;
-      } else
-      {
-        curr = null;
-        ui = null;
-        for (Element s : elements)
-        {
-          if (s.mouseIn())
-          {
-            curr = s;
-            if (s instanceof Semafor)
-            {
-              ui = new SemaforUI(s.x, s.y);
-            } else
-            {
-              ui = new GateUI(s.x, s.y);
-            }
-            break;
-          }
-        }
-      }
-    }
-  } else
-  {
-    for (Element s : elements)
-    {
-      if (s.mouseIn())
-      {
-        curr = s;
-        if (s instanceof Semafor)
-        {
-          ui = new SemaforUI(s.x, s.y);
+          se.con = option;
+          se.confirmed = false;
+          curr = null;
+          ui = null;
         } else
         {
-          ui = new GateUI(s.x, s.y);
+          curr = null;
+          ui = null;
+          for (Element s : elements)
+          {
+            if (s.mouseIn())
+            {
+              curr = s;
+              if (s instanceof Semafor)
+              {
+                ui = new SemaforUI(s.x, s.y);
+              } else
+              {
+                ui = new GateUI(s.x, s.y);
+              }
+              break;
+            }
+          }
         }
-        break;
+      }
+      else if(ui instanceof GateUI)
+      {
+        Gate g = (Gate) curr;
+        GateUI gui = (GateUI) ui;
+        GateSignal option = gui.getOption();
+        if (option != null)
+        {
+          g.sig = option;
+          g.confirmed = false;
+          curr = null;
+          ui = null;
+        } else
+        {
+          curr = null;
+          ui = null;
+          for (Element s : elements)
+          {
+            if (s.mouseIn())
+            {
+              curr = s;
+              if (s instanceof Semafor)
+              {
+                ui = new SemaforUI(s.x, s.y);
+              } else
+              {
+                ui = new GateUI(s.x, s.y);
+              }
+              break;
+            }
+          }
+        }
+      }
+      else if(ui instanceof RightClickUI)
+      {
+        RightClickUI gui = (RightClickUI) ui;
+        RightClickControl option = gui.getOption();
+        if(option != null)
+        {
+          if(option == RightClickControl.ZATWIERDZ)
+          {
+            zatwierdz();
+            ui = null;
+            curr = null;
+          }
+        }
+        else
+        {
+          curr = null;
+          ui = null;
+          for (Element s : elements)
+          {
+            if (s.mouseIn())
+            {
+              curr = s;
+              if (s instanceof Semafor)
+              {
+                ui = new SemaforUI(s.x, s.y);
+              } else
+              {
+                ui = new GateUI(s.x, s.y);
+              }
+              break;
+            }
+          }
+        }
+      }
+    } else
+    {
+      for (Element s : elements)
+      {
+        if (s.mouseIn())
+        {
+          curr = s;
+          if (s instanceof Semafor)
+          {
+            ui = new SemaforUI(s.x, s.y);
+          } else
+          {
+            ui = new GateUI(s.x, s.y);
+          }
+          break;
+        }
       }
     }
+  }
+  else if(mouseButton == RIGHT)
+  {
+     ui = new RightClickUI(mouseX, mouseY);
+     curr = null;
+  }
+}
+
+boolean checkCollision(int a, int b)
+{
+  return ((Semafor) elements[a]).con == Control.JAZDA && ((Semafor) elements[b]).con == Control.JAZDA; 
+}
+
+void zatwierdz()
+{
+  if(checkCollision(3, 8) || checkCollision(2, 7) ||
+     checkCollision(0, 7) || checkCollision(0, 8) ||
+     checkCollision(2, 5) || checkCollision(3, 5) ||
+     checkCollision(2, 3) || checkCollision(7, 8))
+  {
+    collision = true;
+    return;
+  }
+  collision = false;
+  for(Element e : elements)
+  {
+    e.confirmed = true;
+  }
+  
+  for(Element e : elements)
+  {
+    if(e instanceof Semafor && ((Semafor) e).ch == '1') continue;
+    sc.write(e.toString());
   }
 }
 
@@ -223,24 +293,7 @@ void keyPressed()
 {
   if (keyCode == ENTER)
   {
-    if((((Semafor) elements[3]).con == Control.JAZDA && ((Semafor) elements[8]).con == Control.JAZDA) || (((Semafor) elements[2]).con == Control.JAZDA && ((Semafor) elements[7]).con == Control.JAZDA) ||
-       (((Semafor) elements[0]).con == Control.JAZDA && ((Semafor) elements[7]).con == Control.JAZDA) || (((Semafor) elements[0]).con == Control.JAZDA && ((Semafor) elements[8]).con == Control.JAZDA) ||
-       (((Semafor) elements[2]).con == Control.JAZDA && ((Semafor) elements[5]).con == Control.JAZDA) || (((Semafor) elements[3]).con == Control.JAZDA && ((Semafor) elements[5]).con == Control.JAZDA))
-    {
-      collision = true;
-      return;
-    }
-    collision = false;
-    for(Element e : elements)
-    {
-      e.confirmed = true;
-    }
-    
-    for(Element e : elements)
-    {
-      if(e instanceof Semafor && ((Semafor) e).ch == '1') continue;
-      sc.write(e.toString());
-    }
+    zatwierdz();
   }
 }
 

@@ -52,7 +52,14 @@ class Gate extends Element
       if(confirmed) stroke(0, 255, 0);
       else stroke(255, 255, 0);
     }
+    PVector v = PVector.sub(new PVector(next_forward.x, next_forward.y), new PVector(x, y));
+    v.limit(LEN);
+    v.add(new PVector(x, y));
+    push();
+    stroke(255, OPACITY);
     line(x, y, next_forward.x, next_forward.y);
+    pop();
+    line(x, y, v.x, v.y);
     if(confirmed) stroke(0, 255, 0);
     else stroke(255, 255, 0);
     if(sig == GateSignal.STRAIGHT) stroke(255, OPACITY);
