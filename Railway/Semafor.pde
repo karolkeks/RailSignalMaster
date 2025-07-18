@@ -58,7 +58,7 @@ class Semafor extends Element
       else stroke(255, 255, 0);
     }
     strokeWeight(2);
-    if (next != null) c.draw();
+    if (next != null) c.draw(true);
   }
 
   void draw()

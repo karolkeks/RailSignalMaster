@@ -63,7 +63,7 @@ class Gate extends Element
     if(confirmed) stroke(0, 255, 0);
     else stroke(255, 255, 0);
     if(sig == GateSignal.STRAIGHT) stroke(255, OPACITY);
-    c.draw();
+    c.draw(false);
   }
   
   boolean mouseIn()
